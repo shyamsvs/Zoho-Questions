@@ -1,0 +1,22 @@
+#include <stdio.h>
+
+int main(void) 
+{
+  int num , count=0 , row , col;
+  scanf("%d",&num);
+  for(row = 1;row <=num;row++)
+  {
+      for(col=1;col<=num*2-row;col++)
+      {
+          if(col<=(num*2-row)-num)
+            printf("  ");
+          else if(row %2 != 0)
+              printf("%2d ",++count);
+          else
+              printf("%2d ",count--);
+      }
+      count = count+num;
+      printf("\n");
+  }
+  return 0;
+}
