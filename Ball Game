@@ -1,0 +1,179 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+int straight(char**);
+int left(char** );
+int right(char** );
+
+int ballPos , dim;
+
+int main(void) 
+{
+  char **wall , command;
+  int ind , row , col , numOfBricks , brow , bcol ,ballLife;
+  printf("\nEnter the size :\n");
+  scanf("%d",&dim);
+  wall=(char**)malloc(dim*sizeof(char*));
+  for(ind=0 ; ind <dim ; ind++)
+      wall[ind]=(char*)malloc(dim*sizeof(char));
+  ballPos=dim/2;
+  wall[dim-1][dim/2]='O';
+  for(row=0 ; row <dim ; row++)
+  {
+    for(col=0 ; col <dim ; col++)
+    {
+      if(row==0 )
+        wall[row][col]='W';
+
+      else if(col==0 || col==dim-1)
+        wall[row][col]='W';
+
+      else if(row==dim-1 && wall[row][col]!='O')
+        wall[row][col]='G';
+      
+      else 
+        wall[row][col]=' ';
+    }
+  }
+  wall[dim-1][dim/2]='O';
+  for(row=0 ; row <dim ; row++, printf("\n"))
+  {
+    for(col=0 ; col <dim ; col++)
+    {
+      printf("%c ",wall[row][col]);
+    }
+  }
+  printf("\nEnter the number of bricks:");
+  scanf("%d",&numOfBricks);
+  for(ind=1 ; ind<=numOfBricks ; ind++)
+  {
+      printf("\nEnter the brick %d co-ordinates:",ind);
+      scanf("%d %d",&brow , &bcol);
+      if(brow==0 || brow==dim-1 || bcol==0 || bcol==dim-1)
+      {
+        printf("\nCannot place the brick\n");
+        ind--;
+        continue;
+      }
+      wall[brow][bcol]='1';
+  }
+
+  printf("\nEnter the ball life:");
+  scanf("%d",&ballLife);
+
+  while( ballLife > 0 )
+  {
+      scanf("%c",&command);
+      printf("\nEnter the command :");
+      scanf("%c",&command);
+      if(command=='S' || command=='s')
+          straight(wall);
+      
+      else if(command=='L' || command=='l')
+          left(wall);
+      else if(command=='R' || command=='r')
+          right(wall);
+      else 
+      {
+          printf("\nEnter the valid command\n");
+          ballLife++;
+          continue;
+      }
+
+      for(row=0 ; row <dim ; row++, printf("\n"))
+      {
+          for(col=0 ; col <dim ; col++)
+          {
+              printf("%c ",wall[row][col]);
+          }
+      }
+      --ballLife;
+      printf("\nBall Life : %d\n",ballLife);
+
+  }
+
+
+  /*for(row=0 ; row <dim ; row++, printf("\n"))
+  {
+    for(col=0 ; col <dim ; col++)
+    {
+      printf("%c ",wall[row][col]);
+    }
+  }*/
+  return 0;
+}
+
+
+int straight(char **wall)
+{
+    int row , col;
+    wall[dim-1][ballPos]='G';
+    for(row=dim-1 , col=ballPos ; row>0 ; row--)
+    {
+        if(wall[row][col]=='1')
+        {
+            wall[row][col]=' ';
+            break;
+        }
+    }
+    wall[dim-1][ballPos]='O';
+    return 0;
+}
+
+int left(char **wall)
+{
+    int row , col;
+    wall[dim-1][ballPos]='G';
+    for(row=dim-1 , col=ballPos ; row>0 , col>0 ; row-- , col--)
+    {
+        if(wall[row][col]=='1')
+        {
+            wall[row][col]=' ';
+            wall[dim-1][col]='O';
+            ballPos=col;
+            return 0;
+        }
+    }
+    for( ; col<dim-1 ; col++)
+    {
+        if(wall[row][col]=='1')
+        {
+            wall[row][col]=' ';
+            wall[dim-1][col]='O';
+            ballPos=col;
+            return 0;
+        }
+    }
+    wall[dim-1][ballPos]='O';
+    return 0;
+}
+
+
+
+int right(char **wall)
+{
+    int row , col;
+    wall[dim-1][ballPos]='G';
+    for(row=dim-1 , col=ballPos ; row>0 , col<dim-1 ; row-- , col++)
+    {
+        if(wall[row][col]=='1')
+        {
+            wall[row][col]=' ';
+            wall[dim-1][col]='O';
+            ballPos=col;
+            return 0;
+        }
+    }
+    for( ; col>0 ; col--)
+    {
+        if(wall[row][col]=='1')
+        {
+            wall[row][col]=' ';
+            wall[dim-1][col]='O';
+            ballPos=col;
+            return 0;
+        }
+    }
+    wall[dim-1][ballPos]='O';
+    return 0;
+}
